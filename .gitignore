@@ -1,3 +1,5 @@
 .env
 ec2-joe.pem
 node_modules
+.idea/
+/.idea/vcs.xml
