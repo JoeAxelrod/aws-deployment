@@ -1,11 +1,11 @@
 import express from 'express';
-import { client } from './db.js'; // Adjust the path as necessary
+import { client } from './db.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Hello World! 11111');
 });
 
 app.get('/tables', async (req, res) => {

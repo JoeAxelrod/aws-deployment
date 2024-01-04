@@ -1,0 +1,38 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '18'
+    - name: Deploy to EC2
+      env:
+        EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        HOST: '16.170.224.150'
+      run: |
+        # Install SSH client
+        sudo apt-get update
+        sudo apt-get install openssh-client -y
+        # Start SSH agent
+        eval $(ssh-agent -s)
+        # Add private key to the agent
+        ssh-add - <<< "${EC2_SSH_KEY}"
+        # Disable SSH key host checking
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        # Stop the current application
+        ssh ec2-user@$HOST 'pm2 stop all'
+        # Deploy the application
+        scp -r . ec2-user@$HOST:/var/www/app
+        # Install dependencies and restart the application using PM2
+        ssh ec2-user@$HOST 'cd /var/www/app && npm install && pm2 reload all --update-env'
