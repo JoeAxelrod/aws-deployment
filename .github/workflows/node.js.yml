@@ -18,7 +18,7 @@ jobs:
         node-version: '18'
     - name: Deploy to EC2
       env:
-        EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        EC2_ACTIONS_SSH_KEY: ${{ secrets.EC2_ACTIONS_SSH_KEY }}
         HOST: '16.170.224.150'
       run: |
         # Install SSH client
@@ -29,16 +29,14 @@ jobs:
         eval $(ssh-agent -s)
     
         # Add private key to the agent
-        ssh-add - <<< "${EC2_SSH_KEY}"
+        ssh-add - <<< "${EC2_ACTIONS_SSH_KEY}"
     
-        # Ensure SSH directory exists and configure SSH
+        # Create SSH directory and configure
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
-        touch ~/.ssh/config
         echo "StrictHostKeyChecking no" > ~/.ssh/config
         chmod 644 ~/.ssh/config
     
         # Deploy the application
         scp -r . ec2-user@$HOST:/var/www/app
         ssh ec2-user@$HOST 'cd /var/www/app && npm install && pm2 reload all --update-env'
-
