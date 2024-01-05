@@ -31,20 +31,14 @@ jobs:
         # Add private key to the agent
         ssh-add - <<< "${EC2_SSH_KEY}"
     
-        # Ensure the SSH config directory exists
+        # Ensure SSH directory exists and configure SSH
         mkdir -p ~/.ssh
         chmod 700 ~/.ssh
-    
-        # Create SSH config file and set permissions
         touch ~/.ssh/config
         echo "StrictHostKeyChecking no" > ~/.ssh/config
         chmod 644 ~/.ssh/config
     
         # Deploy the application
         scp -r . ec2-user@$HOST:/var/www/app
-        ssh ec2-user@$HOST << 'ENDSSH'
-          cd /var/www/app
-          npm install
-          pm2 reload all --update-env
-        ENDSSH
-    
+        ssh ec2-user@$HOST 'cd /var/www/app && npm install && pm2 reload all --update-env'
+
