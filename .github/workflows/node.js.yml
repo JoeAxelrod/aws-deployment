@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: '18'
     - name: Deploy to EC2
@@ -21,7 +21,6 @@ jobs:
         EC2_ACTIONS_SSH_KEY: ${{ secrets.EC2_ACTIONS_SSH_KEY }}
         HOST: '16.170.224.150'
       run: |
-        # aaa
         # Install SSH client
         sudo apt-get update
         sudo apt-get install openssh-client -y
@@ -40,6 +39,6 @@ jobs:
     
         # Copy the entire current directory to the remote server
         scp -r . ec2-user@${{ HOST }}:/var/www/app
+
         # Deploy the application
-#        scp -r . ec2-user@$HOST:/var/www/app
         ssh ec2-user@$HOST 'cd /var/www/app && npm install && pm2 reload all --update-env'
