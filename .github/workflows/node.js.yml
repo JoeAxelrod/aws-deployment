@@ -38,6 +38,8 @@ jobs:
         echo "StrictHostKeyChecking no" > ~/.ssh/config
         chmod 644 ~/.ssh/config
     
+        # Copy the entire current directory to the remote server
+        scp -r . ec2-user@${{ HOST }}:/var/www/app
         # Deploy the application
-        scp -r . ec2-user@$HOST:/var/www/app
+#        scp -r . ec2-user@$HOST:/var/www/app
         ssh ec2-user@$HOST 'cd /var/www/app && npm install && pm2 reload all --update-env'
