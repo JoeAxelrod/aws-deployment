@@ -16,10 +16,11 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '18'
+    # ...
     - name: Deploy to EC2
       env:
         EC2_ACTIONS_SSH_KEY: ${{ secrets.EC2_ACTIONS_SSH_KEY }}
-        HOST: '16.170.224.150'  # Make sure this is correctly defined
+        HOST: '16.170.224.150'
       run: |
         # Install SSH client
         sudo apt-get update
@@ -36,9 +37,10 @@ jobs:
         chmod 700 ~/.ssh
         echo "StrictHostKeyChecking no" > ~/.ssh/config
         chmod 644 ~/.ssh/config
-    
-        # Copy the entire current directory to the remote server
-        scp -r . ec2-user@${HOST}:/var/www/app  # Change this to ${HOST}
 
         # Deploy the application
+        # Copy the entire current directory to the remote server
+        scp -r $GITHUB_WORKSPACE/* ec2-user@${HOST}:/var/www/app
+
+        # Run commands on the server
         ssh ec2-user@${HOST} 'cd /var/www/app && npm install && pm2 reload all --update-env'
