@@ -19,7 +19,7 @@ jobs:
     - name: Deploy to EC2
       env:
         EC2_ACTIONS_SSH_KEY: ${{ secrets.EC2_ACTIONS_SSH_KEY }}
-        HOST: '16.170.224.150'
+        HOST: '16.170.224.150'  # Make sure this is correctly defined
       run: |
         # Install SSH client
         sudo apt-get update
@@ -38,7 +38,7 @@ jobs:
         chmod 644 ~/.ssh/config
     
         # Copy the entire current directory to the remote server
-        scp -r . ec2-user@${{ HOST }}:/var/www/app
+        scp -r . ec2-user@${HOST}:/var/www/app  # Change this to ${HOST}
 
         # Deploy the application
-        ssh ec2-user@$HOST 'cd /var/www/app && npm install && pm2 reload all --update-env'
+        ssh ec2-user@${HOST} 'cd /var/www/app && npm install && pm2 reload all --update-env'
