@@ -21,6 +21,7 @@ jobs:
         EC2_ACTIONS_SSH_KEY: ${{ secrets.EC2_ACTIONS_SSH_KEY }}
         HOST: '16.170.224.150'
       run: |
+        # aaa
         # Install SSH client
         sudo apt-get update
         sudo apt-get install openssh-client -y
