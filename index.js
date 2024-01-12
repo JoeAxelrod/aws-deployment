@@ -24,6 +24,16 @@ app.get('/tables', async (req, res) => {
   }
 });
 
+app.get('/cpu-load', (req, res) => {
+  const start = Date.now();
+  let i = 0;
+  while (Date.now() - start < 10000) { // 10 seconds high CPU load
+    i++;
+  }
+  res.send(`CPU load generated for 10 seconds, iterations: ${i}`);
+});
+
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
